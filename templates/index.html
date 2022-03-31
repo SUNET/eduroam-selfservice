@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <title>
+      eduroam selfservice
+    </title>
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+  </head>
+  <body>
+    <div class="header">
+    </div>
+    <form method="POST">
+      <div align="center">
+	<img src="static/sunet.jpg">
+      </div>
+      <div class="input-group">
+	<label>Username</label>
+	<input required name="username" value="{{ username }}">
+      </div>
+      <br/>
+      <div class="input-group">
+	<label>Password</label>
+	<input type="password" required name="password" placeholder="Password...">
+      </div>
+      <br/>
+      <div class="input-group">
+	<label>Confirm password</label>
+	<input type="password" required name="password2" placeholder="Password...">
+      </div>
+      <br/>      
+      <div class="input-group">
+	<button type="submit" class="btn">Submit</button>
+      </div>
+    </form>    
+  </body>
+</html>

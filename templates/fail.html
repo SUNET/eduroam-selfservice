@@ -1,0 +1,29 @@
+<html>
+  <head>
+    <title>
+      eduroam selfservice
+    </title>
+    <link rel="stylesheet" type="text/css" href="static/style.css">
+  </head>
+  <body>
+    <div class="header">
+    </div>
+    <div class="content">
+      <center>
+	<img src="static/sunet.jpg">
+      </center>
+      <br/>
+      {% if errors %}
+      <div class="error">
+        {% for error in errors %}
+        <li>{{ error }}</li>
+        {% endfor %}
+      </div>
+      {% endif %}
+      <br/>
+      <div class="input-group">
+	<a class="btn" href="/">Try again</a>
+      </div>
+    </div>
+  </body>
+</html>
