@@ -1,0 +1,17 @@
+#
+# Jenkins pipeline
+#
+
+disabled: false
+
+git:
+  branch: main
+
+extra_jobs:
+  - name: eduroam-selfservice
+    git:
+      branch: main
+    builders:
+      - docker
+    docker_name: eduroam/selfservice
+    docker_context_dir: .
