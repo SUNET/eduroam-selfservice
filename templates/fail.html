@@ -6,22 +6,20 @@
     <link rel="stylesheet" type="text/css" href="static/style.css">
   </head>
   <body>
-    <div class="header">
-    </div>
     <div class="content">
       <div align="center">
 	<img src="static/sunet.jpg">
       </div>
       <br/>
-      {% if errors %}
-      <div class="error">
-	{% for error in errors %}
-	<li>{{ error }}</li>
-	{% endfor %}
-      </div>
-      {% endif %}
-      <br/>
       <form action="/">
+	{% if errors %}
+	<div class="error">
+	  {% for error in errors %}
+	  <li>{{ error }}</li>
+	  {% endfor %}
+	</div>
+	{% endif %}
+	<br/>
 	<div class="input-group">
 	  <button type="submit" class="btn">Try again</button>
 	</div>
