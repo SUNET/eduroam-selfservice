@@ -14,44 +14,52 @@ class NacConnection(object):
         errors = []
         create_user = False
 
-        res = requests.get(
-            self.url + f"/{username}", headers=self.headers)
-        res_json = res.json()
+        try:
+            res = requests.get(
+                self.url + f"/{username}", headers=self.headers).json()
+        except Exception:
+            errors.append('Connection to NAC server failed')
+            return errors
 
-        if "data" not in res_json:
+        if "data" not in res:
             errors.append("Could not contact NAC server")
 
-        if len(res_json["data"]) == 0:
+        if len(res["data"]) == 0:
             create_user = True
 
-        try:
-            if create_user:
-                userdata = {
-                    "username": username,
-                    "password": password,
-                    "vlan": 700,
-                    "active": True
-                }
+        if create_user:
+            userdata = {
+                "username": username,
+                "password": password,
+                "vlan": 700,
+                "active": True
+            }
 
+            try:
                 res = requests.post(
                     self.url, headers=self.headers, json=userdata)
 
                 if res.status_code != 200:
                     errors.append("Failed to create user")
-            else:
-                userdata = {
-                    "password": password,
-                    "vlan": 700,
-                    "active": True
-                }
+            except Exception:
+                errors.append("Failed to handle request")
+        else:
+            userdata = {
+                "password": password,
+                "vlan": 700,
+                "active": True
+            }
 
+            try:
                 res = requests.put(
                     self.url + f"/{username}", headers=self.headers,
                     json=userdata)
 
-                if res.status_code != 200:
-                    errors.append("Failed to change password for user")
-        except Exception:
-            errors.append("Failed to handle request")
+            except Exception:
+                errors.append("Failed to handle request")
+                return errors
+
+            if res.status_code != 200:
+                errors.append("Failed to change password for user")
 
         return errors

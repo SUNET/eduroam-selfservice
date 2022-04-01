@@ -28,23 +28,26 @@ templates = Jinja2Templates(directory="templates")
 nac = NacConnection(NAC_URL, NAC_TOKEN)
 
 
+def response_return(context):
+    if "errors" in context and context["errors"] != []:
+        return templates.TemplateResponse("fail.html", context=context)
+    if "applied" in context and context["applied"]:
+        return templates.TemplateResponse("success.html", context=context)
+    return templates.TemplateResponse("index.html", context=context)
+
+
 @app.get("/")
 def index_get(request: Request):
     eppn = request.headers.get("REMOTE_USER")
-
-    if eppn == None:
-        context = {
-            "request": request,
-            "username": eppn,
-            "errors": ["Failed to read username (EPPN)"]
-        }
-        return templates.TemplateResponse("fail.html", context=context)
-
     context = {
         "request": request,
         "username": eppn,
     }
-    return templates.TemplateResponse("index.html", context=context)
+
+    if eppn is None:
+        context["errors"] = ["Failed to read username (EPPN)"]
+
+    return response_return(context)
 
 
 @app.post("/")
@@ -52,22 +55,17 @@ async def index_post(request: Request):
     form = EduroamUserForm(request)
     await form.load_data()
     errors = form.is_valid()
+    context = {
+        "request": request,
+        "username": form.username,
+    }
 
     if errors != []:
-        context = {
-            "request": request,
-            "username": form.username,
-            "errors": form.errors
-        }
-        return templates.TemplateResponse("fail.html", context=context)
+        context["errors"] = form.errors
     else:
+        context["applied"] = True
         errors = nac.handle_user(form.username, form.password)
-        context = {
-            "request": request,
-            "username": form.username,
-            "errors": errors
-        }
-
         if errors != []:
-            return templates.TemplateResponse("fail.html", context=context)
-    return templates.TemplateResponse("success.html", context=context)
+            context["errors"] = errors
+
+    return response_return(context)
