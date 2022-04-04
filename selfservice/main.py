@@ -38,7 +38,13 @@ def response_return(context):
 
 @app.get("/")
 def index_get(request: Request):
-    eppn = request.headers.get("REMOTE_USER")
+    if "REMOTE_USER" in request.headers:
+        eppn = request.headers.get("REMOTE_USER")
+    elif "REMOTE_USER" in os.environ:
+        eppn = os.environ["REMOTE_USER"]
+    else:
+        eppn = None
+
     context = {
         "request": request,
         "username": eppn,
