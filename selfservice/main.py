@@ -10,21 +10,15 @@ from selfservice.nac import NacConnection
 
 try:
     NAC_TOKEN = os.environ["NAC_TOKEN"]
-except KeyError:
-    print("Enironment variable NAC_TOKEN must be set.")
-    sys.exit(-2)
-
-try:
     NAC_URL = os.environ["NAC_URL"]
 except KeyError:
-    print("Enironment variable NAC_URL must be set.")
+    print("Enironment variables NAC_TOKEN and NAC_URL must be set.")
     sys.exit(-2)
 
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
-
 nac = NacConnection(NAC_URL, NAC_TOKEN)
 
 
